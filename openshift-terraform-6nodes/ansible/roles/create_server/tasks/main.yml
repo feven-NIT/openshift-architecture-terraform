@@ -1,0 +1,48 @@
+---
+# tasks file for create_server
+  
+  - name: Create a basic ssh_key
+    hcloud_ssh_key:
+      name: ocp-key
+      api_token: "{{ token }}"
+      public_key: "{{ ssh_pub_key }}"
+      state: present  
+
+  - name: "Create servers "
+    hcloud_server: 
+      api_token: "{{ hcloud_token }}" 
+      name: '{{ item.name }}'
+      server_type: "{{ item.type }}" 
+      image: "{{ item.image }}"
+      ssh_keys: "{{item.ssh_key | default(omit)}}"
+      state: "{{ item.state }}"
+      labels: "{{item.labels | default(omit)}}"
+    loop: "{{ hetzner_server }}"
+
+  - name: Create Load Balancer
+    hetzner.hcloud.hcloud_load_balancer:
+      api_token: "{{ hcloud_token }}"
+      name: "{{ item.name }}"
+      load_balancer_type: "{{ item.type }}"
+      location: "{{ item.location }}"
+      state: "{{ item.state }}"
+    loop: "{{hetzner_loadbalancer}}"
+
+  - name: Create a label_selector Load Balancer target
+    hetzner.hcloud.hcloud_load_balancer.hcloud_load_balancer_target:
+      api_token: "{{ hcloud_token }}"
+      type: label_selector
+      load_balancer: "{{ item.name }}"
+      label_selector: "{{ item.selector }}"
+      state: "{{ item.state }}"
+    loop: "{{ hetzner_loadbalancer }}"
+
+  - name: Create a Load Balancer service with Port
+    hetzner.hcloud.hcloud_load_balancer.hcloud_load_balancer_service:
+      api_token: "{{ hcloud_token }}"
+      load_balancer: "{{ item.loadbalancer }}"
+      protocol: "{{ item.protocol }}"
+      listen_port: "{{ item.port }}"
+      destination_port: "{{ item.port }}"
+      state: "{{ item.state }}"
+    loop: "{{ hetzner_services }}"

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+openshift-install create manifests --dir $HOME/{{ cluster_name }}
+
+sed -i "s/mastersSchedulable: true/mastersSchedulable: false/g" $HOME/{{ cluster_name }}/manifests/cluster-scheduler-02-config.yml
+
+openshift-install create ignition-configs --dir $HOME/{{ cluster_name }}

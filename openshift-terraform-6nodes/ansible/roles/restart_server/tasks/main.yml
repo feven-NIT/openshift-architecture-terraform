@@ -1,0 +1,13 @@
+---
+# tasks file for rhcos_install
+
+- name: restart server
+  hcloud_server:
+    name: "{{ item.name }}"
+    api_token: "{{ token }}"
+    ssh_keys: "{{ item.ssh_key}}"
+    state: restarted
+  loop: "{{ hetzner_server }}"
+  when: item.labels.app == "worker" or item.labels.app == "master" or item.labels.app == "bootstrap"
+  
+

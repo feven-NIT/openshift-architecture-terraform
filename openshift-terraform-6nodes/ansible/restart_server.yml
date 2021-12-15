@@ -1,0 +1,11 @@
+---
+- name: restart server
+  hosts: localhost
+  vars:
+    - ansible_ssh_private_key_file: auth/ssh-key
+    - ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    - ansible_user: root
+  vars_files: 
+    - ../auth/hcloud.yml
+  roles:
+    - ../roles/restart_server

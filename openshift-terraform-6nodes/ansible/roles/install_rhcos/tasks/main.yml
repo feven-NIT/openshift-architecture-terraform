@@ -1,0 +1,13 @@
+---
+# tasks file for rhcos_install
+
+- name: dowload coreos installer mirror
+  get_url:
+    url:  http://mirror.openshift.com/pub/openshift-v4/x86_64/clients/coreos-installer/latest/coreos-installer
+    dest: /usr/local/bin/coreos-installer
+    mode: 700
+
+- name: install rhcos and bootstrap ignition
+  command: "coreos-installer install --ignition-url=http://{{ hostvars.bastion.ipv4 }}/{{ labels.app }}.ign --insecure-ignition --image-url http://{{ hostvars.bastion.ipv4 }}/rhcos.raw.gz /dev/sda --insecure"
+
+

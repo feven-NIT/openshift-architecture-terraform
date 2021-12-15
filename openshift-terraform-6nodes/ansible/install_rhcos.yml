@@ -1,0 +1,16 @@
+---
+- name: Install rhcos on bootsrap server
+  become: true
+  hosts: 
+    - label_app_bootstrap
+    - label_app_worker
+    - label_app_master
+  vars:
+    - ansible_ssh_private_key_file: auth/ssh-key
+    - ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    - ansible_user: root 
+    - ansible_python_interpreter: /usr/bin/python3 
+  vars_files:
+    - ../auth/hcloud.yml
+  roles:
+    - ../roles/install_rhcos

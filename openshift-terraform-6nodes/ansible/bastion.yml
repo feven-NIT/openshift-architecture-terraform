@@ -1,0 +1,14 @@
+---
+- name: Configure Bastion
+  hosts: label_app_bastion
+  vars:
+    ansible_ssh_private_key_file: auth/ssh-key
+    ansible_user: root
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    ansible_python_interpreter: /usr/bin/python3
+    ocp_release: 4.8.0
+    rhcos_mirror_url: "http://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.8/latest/rhcos-metal.x86_64.raw.gz"
+  vars_files:
+    - ../auth/hcloud.yml
+  roles:
+    - ../roles/bastion
